@@ -105,9 +105,23 @@ const UseFormData = () => {
   };
 
   // Handle file input separately
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, photo: e.target.files[0] });
-  };
+  const [photoUploaded, setPhotoUploaded] = useState(false);
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({
+        ...prev,
+        photo: reader.result, // base64 string
+      }));
+      setPhotoUploaded(true); // If you're showing UI confirmation
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
 
   const handleCheckboxChange = (value, field) => {
     const currentValues = formData[field];
@@ -142,6 +156,7 @@ const UseFormData = () => {
     handleCheckboxChange,
     removeDomain,
     removeTool,
+    photoUploaded,
   };
 };
 
